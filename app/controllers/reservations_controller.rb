@@ -1,18 +1,19 @@
 class ReservationsController < ApplicationController
   before_action :load_user, only: [:users_reservations]
 
+
   def reserve
-    book.reserve(current_user) if book.can_reserve?(current_user)
+    reservation_handler.reserve
     redirect_to(book_path(book.id))
   end
 
   def take
-    book.take(current_user) if book.can_take?(current_user)
+    reservation_handler.take (current_user) if book.can_take?(current_user)
     redirect_to(book_path(book.id))
   end
 
   def give_back
-    book.give_back if book.can_give_back?(current_user)
+    reservation_handler.give_back if book.can_give_back?(current_user)
     redirect_to(book_path(book.id))
   end
 
@@ -24,7 +25,15 @@ class ReservationsController < ApplicationController
   def users_reservations
   end
 
+  def available_reservation
+    reservations.find_by(status: 'AVAILABLE')
+  end
+
   private
+
+  def reservation_handler
+    @reservation_handler ||= ::ReservationHandler.new(current_user,book)
+  end
 
   def book
     @book ||= Book.find(params[:book_id])
