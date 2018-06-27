@@ -6,38 +6,34 @@ class ReservationHandler
   end
 
   def reserve
-    return unless can_reserve?(user)
-    book.reservations.create(user: user, status: 'RESERVED')
+    return 'Book is not available for reservation' unless book.can_reserve?(user)
+      book.reservations.create(user: user, status: 'RESERVED')
   end
 
-  def can_reserve?(user)
-    book.reservations.find_by(user: user, status: 'RESERVED').nil?
-  end
-
-  def cancel_reservation(user)
-    book.reservations.where(user: user, status: 'RESERVED').order(created_at: :asc).first.update_attributes(status: 'CANCELED')
-  end
-
-  def take(user)
-    return unless book.can_take?(user)
-
-    if book.available_reservation.present?
-      book.available_reservation.update_attributes(status: 'TAKEN')
-    else
-      book.reservations.create(user: user, status: 'TAKEN')
+    def cancel_reservation(user)
+      book.reservations.where(user: user, status: 'RESERVED').order(created_at: :asc).first.update_attributes(status: 'CANCELED')
     end
-  end
 
-  def give_back
-    ActiveRecord::Base.transaction do
-      book.reservations.find_by(status: 'TAKEN').update_attributes(status: 'RETURNED')
-      book.next_in_queue.update_attributes(status: 'AVAILABLE') if book.next_in_queue.present?
+    def take(user)
+      return unless book.can_take?(user)
+
+      if book.available_reservation.present?
+        book.available_reservation.update_attributes(status: 'TAKEN')
+      else
+        book.reservations.create(user: user, status: 'TAKEN')
+      end
     end
-  end
+
+    def give_back
+      ActiveRecord::Base.transaction do
+        book.reservations.find_by(status: 'TAKEN').update_attributes(status: 'RETURNED')
+        book.next_in_queue.update_attributes(status: 'AVAILABLE') if book.next_in_queue.present?
+      end
+    end
 
 
-  private
-  attr_reader :user, :book
+    private
 
+    attr_reader :user, :book
 
 end

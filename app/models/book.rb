@@ -13,7 +13,9 @@ class Book < ApplicationRecord
     self.category = Category.where(name: name).first_or_initialize
   end
 
-
+  def can_reserve?(user)
+    reservations.find_by(user: user, status: 'RESERVED').nil?
+  end
   def can_give_back?(user)
     reservations.find_by(user: user, status: 'TAKEN').present?
   end
