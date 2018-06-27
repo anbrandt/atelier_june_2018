@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'AppRouting' do
+<<<<<<< HEAD
   it { expect(root: 'books', action: 'index') }
   it { expect(get: 'books/12/reserve').to route_to(controller: 'reservations', action: 'reserve', book_id: '12') }
   it { expect(get: reserve_book_path(book_id: 12)).to route_to(controller: 'reservations', action: 'reserve', book_id: '12') }
@@ -19,4 +20,28 @@ describe 'AppRouting' do
   it { expect(patch: 'books/12').to route_to(controller: 'books', action: 'update', id: '12') }
   it { expect(put: 'books/12').to route_to(controller: 'books', action: 'update', id: '12') }
   it { expect(delete: 'books/12').to route_to(controller: 'books', action: 'destroy', id: '12') }
+=======
+  it {
+    expect(root: 'books', action: 'index')
+  }
+  it {
+    expect(get: 'books/12/reserve').to route_to(controller: 'reservations', action: 'reserve', book_id: '12')
+  }
+  it {
+    expect(get: 'books/5/take').to route_to(controller: 'reservations', action: 'take', book_id: '5')
+  }
+  it {
+    expect(get: 'books/6/give_back').to route_to(controller: 'reservations', action: 'give_back', book_id: '6')
+  }
+  it {
+    expect(get: 'books/7/cancel_reservation').to route_to(controller: 'reservations', action: 'cancel', book_id: '7')
+  }
+  it {
+    expect(get: 'users/1/reservations').to route_to(controller: 'reservations', action: 'users_reservations', user_id: '1')
+  }
+  it {
+    expect(get: 'google-isbn').to route_to(controller: 'google_books', action: 'show')
+  }
+
+>>>>>>> 8989e3f8414f2fe1d83c39ab87db26c2fd91ef4f
 end
